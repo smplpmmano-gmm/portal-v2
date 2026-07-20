@@ -9922,7 +9922,7 @@ function gantiJenisSurat(kode) {
   document.getElementById('surat-form-container').style.display = 'block';
 
   // Reset & tampilkan field khusus
-  ['hari-tgl','lama-izin','pukul','tempat','tahun-lulus','sekolah-tujuan'].forEach(function(f) {
+  ['hari-tgl','lama-izin','pukul','tempat','tahun-lulus','sekolah-tujuan','judul-sk','ttd-tipe','menimbang','mengingat','diktum','pegawai-group','tmt','keperluan'].forEach(function(f) {
     var el = document.getElementById('field-' + f);
     if (el) el.style.display = 'none';
   });
