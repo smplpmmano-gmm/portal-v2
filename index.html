@@ -10166,7 +10166,6 @@ function previewSuratTahap2(kode) {
   var ttdTipe = g('sf-ttd-tipe') || 'kepsek';
   var judul   = (g('sf-judul-sk') || '').toUpperCase() || '____________________';
 
-  // TTD info
   var TTD_INFO = {
     kepsek        : { kiri: '', kanan: 'Kepala Sekolah,<br><br><br><br><br><strong>La Hatu La Raba, S.Pd., Gr.</strong><br>NIP. 19850314 201903 1 003' },
     yayasan       : { kiri: '', kanan: 'Ketua Yayasan,<br><br><br><br><br><strong>Muhammad Afandi Wahid, ST</strong>' },
@@ -10174,14 +10173,12 @@ function previewSuratTahap2(kode) {
     yayasan_kepsek: { kiri: 'Ketua Yayasan,<br><br><br><br><br><strong>Muhammad Afandi Wahid, ST</strong>', kanan: 'Kepala Sekolah,<br><br><br><br><br><strong>La Hatu La Raba, S.Pd., Gr.</strong><br>NIP. 19850314 201903 1 003' },
   };
   var ttdInfo = TTD_INFO[ttdTipe] || TTD_INFO.kepsek;
-
   var ttdHtml = ttdInfo.kiri
     ? '<div class="preview-ttd"><div style="text-align:center">' + ttdInfo.kiri + '</div><div class="preview-ttd-kanan" style="text-align:center">' + ttdInfo.kanan + '</div></div>'
     : '<div class="preview-ttd"><div></div><div class="preview-ttd-kanan" style="text-align:center">' + ttdInfo.kanan + '</div></div>';
 
   var html = '<div class="preview-kertas">';
 
-  // KOP
   html += '<div class="preview-kop">' +
     '<img src="https://lh3.googleusercontent.com/d/1pVeH-6CRAs2ypRRS917gknBpK0b1wh0v" ' +
     'style="width:80px;height:80px;object-fit:cover;border-radius:50%;flex-shrink:0" ' +
@@ -10194,7 +10191,6 @@ function previewSuratTahap2(kode) {
     '</div></div>' +
     '<hr class="preview-garis">';
 
-  // ── SPT ──
   if (kode === 'SPT') {
     var penerbitSPT = (ttdTipe === 'kepsek' || ttdTipe === 'kepsek_komite')
       ? 'Kepala SMP LPM Mano' : 'Ketua Yayasan Pendidikan LPM Desa Mano';
@@ -10244,7 +10240,7 @@ function previewSuratTahap2(kode) {
     html += '</table><br>';
 
     html += '<div style="text-align:left;margin-bottom:8px">Ditetapkan di : Mano<br>Tanggal : ' + tglStr + '</div>';
-    html += ttdHtml.replace('style="text-align:center">', 'style="text-align:center">');
+    html += ttdHtml;
 
     html += '<div style="page-break-before:always;padding-top:20px;font-weight:bold;text-align:center;font-size:12pt;margin-bottom:2px">LAMPIRAN</div>';
     html += '<div style="text-align:center;font-size:11pt;margin-bottom:14px">Surat Keputusan Nomor: ' + nomor + '</div>';
@@ -10274,9 +10270,8 @@ function previewSuratTahap2(kode) {
       });
     }
     html += '</table>';
-  
-  // ── SK ──
-  if (kode === 'SK') {
+
+  } else if (kode === 'SK') {
     var penerbit = (ttdTipe === 'kepsek' || ttdTipe === 'kepsek_komite')
       ? 'Kepala SMP LPM Mano' : 'Ketua Yayasan Pendidikan LPM Desa Mano';
 
@@ -10291,7 +10286,6 @@ function previewSuratTahap2(kode) {
 
     html += '<div style="font-size:11pt;margin-bottom:8px">' + penerbit + ', setelah</div>';
 
-    // Menimbang
     var menimbangTeks = g('sf-menimbang') || '';
     html += '<div style="font-size:11pt;margin-bottom:4px"><strong>Menimbang:</strong></div>';
     if (menimbangTeks) {
@@ -10303,7 +10297,6 @@ function previewSuratTahap2(kode) {
     }
     html += '<br>';
 
-    // Mengingat
     var mengingatTeks = g('sf-mengingat') || '';
     html += '<div style="font-size:11pt;margin-bottom:4px"><strong>Mengingat:</strong></div>';
     if (mengingatTeks) {
@@ -10315,7 +10308,6 @@ function previewSuratTahap2(kode) {
     }
     html += '<br>';
 
-    // Memutuskan
     html += '<div style="text-align:center;font-weight:bold;font-size:11pt;margin-bottom:2px">MEMUTUSKAN</div>';
     html += '<div style="font-weight:bold;font-size:11pt;margin-bottom:6px">Menetapkan</div>';
 
@@ -10329,14 +10321,10 @@ function previewSuratTahap2(kode) {
     });
     html += '</table><br>';
 
-    html += ttdHtml.replace(
-      'style="text-align:center">',
-      'style="text-align:center"><div style="text-align:left;margin-bottom:8px">Ditetapkan di &nbsp;: Mano<br>Tanggal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + tglStr + '</div>'
-    );
-  }
+    html += '<div style="text-align:left;margin-bottom:8px">Ditetapkan di : Mano<br>Tanggal : ' + tglStr + '</div>';
+    html += ttdHtml;
 
-  // ── ST ──
-  else if (kode === 'ST') {
+  } else if (kode === 'ST') {
     var penandaST = (ttdTipe === 'yayasan' || ttdTipe === 'yayasan_kepsek')
       ? { nama: 'Muhammad Afandi Wahid, ST', jabatan: 'Ketua Yayasan Pendidikan LPM Desa Mano' }
       : { nama: 'La Hatu La Raba, S.Pd., Gr.', jabatan: 'Kepala SMP LPM Mano' };
@@ -10381,10 +10369,8 @@ function previewSuratTahap2(kode) {
     html += '<div style="font-size:11pt">Ditetapkan di &nbsp;: Mano</div>';
     html += '<div style="font-size:11pt">Tanggal &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ' + tglStr + '</div><br>';
     html += ttdHtml;
-  }
 
-  // ── SKET ──
-  else if (kode === 'SKET') {
+  } else if (kode === 'SKET') {
     var penandaSKET = (ttdTipe === 'yayasan' || ttdTipe === 'yayasan_kepsek')
       ? { nama: 'Muhammad Afandi Wahid, ST', jabatan: 'Ketua Yayasan Pendidikan LPM Desa Mano' }
       : { nama: 'La Hatu La Raba, S.Pd., Gr.', jabatan: 'Kepala SMP LPM Mano' };
@@ -10641,80 +10627,72 @@ function isTahap2(kode) {
 // Override gantiJenisSurat untuk handle tahap 2
 var _gantiJenisSuratOri = gantiJenisSurat;
 gantiJenisSurat = function(kode) {
-  if (isTahap2(kode)) {
-    _jenisSuratAktif = kode;
-    _suratUrlsBaru   = null;
-    document.getElementById('hasil-surat').style.display = 'none';
-
-    if (!kode) {
-      document.getElementById('surat-form-container').style.display = 'none';
-      document.getElementById('surat-preview-content').innerHTML =
-        '<div class="surat-preview-empty"><i class="fa-solid fa-file-lines"></i><p style="font-size:13px">Pilih jenis surat dan isi form untuk melihat preview</p></div>';
-      return;
-    }
-
-    document.getElementById('surat-form-container').style.display = 'block';
-
-    // Sembunyikan semua field Tahap 1
-    ['hari-tgl','lama-izin','pukul','tempat','tahun-lulus','sekolah-tujuan','siswa-group'].forEach(function(f) {
-      var el = document.getElementById('field-' + f);
-      if (el) el.style.display = 'none';
-    });
-
-    // Sembunyikan field umum yang tidak dipakai tahap 2
-    document.getElementById('field-siswa-group').style.display = 'none';
-
-    // Tampilkan/sembunyikan field Tahap 2
-    var isSK   = kode === 'SK';
-    var isST   = kode === 'ST';
-    var isSKET = kode === 'SKET';
-    var isSPT  = kode === 'SPT';
-
-    document.getElementById('field-judul-sk').style.display    = (isSK || isSKET || isSPT) ? 'block' : 'none';
-    document.getElementById('field-ttd-tipe').style.display    = 'block';
-    document.getElementById('field-menimbang').style.display   = (isSK || isSPT) ? 'block' : 'none';
-    document.getElementById('field-mengingat').style.display   = (isSK || isSPT) ? 'block' : 'none';
-    document.getElementById('field-diktum').style.display      = (isSK || isSPT) ? 'block' : 'none';
-    document.getElementById('field-lampiran-spt').style.display = isSPT ? 'block' : 'none';
-    document.getElementById('field-pegawai-group').style.display = (isST || isSKET) ? 'block' : 'none';
-    document.getElementById('field-tmt').style.display         = isST ? 'block' : 'none';
-    document.getElementById('field-keperluan').style.display   = isSKET ? 'block' : 'none';
-
-    if (isSPT) { _lampiranSPT = []; renderLampiranSPT(); }
-
-    // Update label judul
-    if (isSKET) {
-      document.querySelector('#field-judul-sk label').textContent = 'Judul Surat Keterangan *';
-      document.getElementById('sf-judul-sk').placeholder = 'cth: SURAT KETERANGAN AKTIF MENGAJAR';
-    } else if (isSK) {
-      document.querySelector('#field-judul-sk label').textContent = 'Judul SK *';
-      document.getElementById('sf-judul-sk').placeholder = 'cth: PENETAPAN PANITIA UJIAN SEKOLAH';
-    }
-
-    // Update perihal default
-    var perihalDefault = { SK: 'Surat Keputusan', ST: 'Surat Tugas', SKET: 'Surat Keterangan', SPT: 'Pembagian Tugas Guru' };
-    document.getElementById('sf-perihal').value = perihalDefault[kode] || '';
-
-    // Init diktum default untuk SK
-    if ((isSK || isSPT) && document.getElementById('diktum-container').children.length === 0) {
-      tambahDiktum();
-    }
-
-    // Muat daftar guru
-    if (isST || isSKET) {
-      muatDaftarGuru();
-    }
-
-    // Reset field
-    document.getElementById('sf-nomor').value    = '';
-    document.getElementById('sf-tgl-surat').value = '';
-    document.getElementById('sf-lampiran').value  = '-';
-
-    previewSurat();
-
-  } else {
+  if (!isTahap2(kode)) {
     _gantiJenisSuratOri(kode);
+    return;
   }
+
+  _jenisSuratAktif = kode;
+  _suratUrlsBaru   = null;
+  document.getElementById('hasil-surat').style.display = 'none';
+
+  if (!kode) {
+    document.getElementById('surat-form-container').style.display = 'none';
+    document.getElementById('surat-preview-content').innerHTML =
+      '<div class="surat-preview-empty"><i class="fa-solid fa-file-lines"></i><p style="font-size:13px">Pilih jenis surat dan isi form untuk melihat preview</p></div>';
+    return;
+  }
+
+  document.getElementById('surat-form-container').style.display = 'block';
+
+  ['hari-tgl','lama-izin','pukul','tempat','tahun-lulus','sekolah-tujuan','siswa-group'].forEach(function(f) {
+    var el = document.getElementById('field-' + f);
+    if (el) el.style.display = 'none';
+  });
+
+  document.getElementById('field-siswa-group').style.display = 'none';
+
+  var isSK   = kode === 'SK';
+  var isST   = kode === 'ST';
+  var isSKET = kode === 'SKET';
+  var isSPT  = kode === 'SPT';
+
+  document.getElementById('field-judul-sk').style.display     = (isSK || isSKET || isSPT) ? 'block' : 'none';
+  document.getElementById('field-ttd-tipe').style.display     = 'block';
+  document.getElementById('field-menimbang').style.display    = (isSK || isSPT) ? 'block' : 'none';
+  document.getElementById('field-mengingat').style.display    = (isSK || isSPT) ? 'block' : 'none';
+  document.getElementById('field-diktum').style.display       = (isSK || isSPT) ? 'block' : 'none';
+  document.getElementById('field-lampiran-spt').style.display = isSPT ? 'block' : 'none';
+  document.getElementById('field-pegawai-group').style.display = (isST || isSKET) ? 'block' : 'none';
+  document.getElementById('field-tmt').style.display          = isST ? 'block' : 'none';
+  document.getElementById('field-keperluan').style.display    = isSKET ? 'block' : 'none';
+
+  if (isSPT) { _lampiranSPT = []; renderLampiranSPT(); }
+
+  if (isSKET) {
+    document.querySelector('#field-judul-sk label').textContent = 'Judul Surat Keterangan *';
+    document.getElementById('sf-judul-sk').placeholder = 'cth: SURAT KETERANGAN AKTIF MENGAJAR';
+  } else if (isSK) {
+    document.querySelector('#field-judul-sk label').textContent = 'Judul SK *';
+    document.getElementById('sf-judul-sk').placeholder = 'cth: PENETAPAN PANITIA UJIAN SEKOLAH';
+  }
+
+  var perihalDefault = { SK: 'Surat Keputusan', ST: 'Surat Tugas', SKET: 'Surat Keterangan', SPT: 'Pembagian Tugas Guru' };
+  document.getElementById('sf-perihal').value = perihalDefault[kode] || '';
+
+  if ((isSK || isSPT) && document.getElementById('diktum-container').children.length === 0) {
+    tambahDiktum();
+  }
+
+  if (isST || isSKET) {
+    muatDaftarGuru();
+  }
+
+  document.getElementById('sf-nomor').value     = '';
+  document.getElementById('sf-tgl-surat').value = '';
+  document.getElementById('sf-lampiran').value  = '-';
+
+  previewSurat();
 };
 
 // Muat daftar guru dari server
