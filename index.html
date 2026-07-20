@@ -10194,6 +10194,89 @@ function previewSuratTahap2(kode) {
     '</div></div>' +
     '<hr class="preview-garis">';
 
+  // ── SPT ──
+  if (kode === 'SPT') {
+    var penerbitSPT = (ttdTipe === 'kepsek' || ttdTipe === 'kepsek_komite')
+      ? 'Kepala SMP LPM Mano' : 'Ketua Yayasan Pendidikan LPM Desa Mano';
+
+    html += '<div style="text-align:center;font-weight:bold;font-size:13pt;margin-bottom:4px">SURAT KEPUTUSAN</div>';
+    html += '<div style="text-align:center;font-weight:bold;font-size:11pt;margin-bottom:4px">No. ' + nomor + '</div>';
+    html += '<div style="text-align:center;font-size:11pt;margin-bottom:2px">TENTANG</div>';
+    html += '<div style="text-align:center;font-weight:bold;font-size:11pt;margin-bottom:10px">' + judul + '</div>';
+    if (ttdTipe === 'kepsek' || ttdTipe === 'kepsek_komite') {
+      html += '<div style="text-align:center;font-weight:bold;font-size:11pt;margin-bottom:8px">DENGAN RAHMAT TUHAN YANG MAHA ESA</div>';
+    }
+    html += '<div style="font-size:11pt;margin-bottom:8px">' + penerbitSPT + ', setelah</div>';
+
+    var menimbangSPT = g('sf-menimbang') || '';
+    html += '<div style="font-size:11pt;margin-bottom:4px"><strong>Menimbang:</strong></div>';
+    if (menimbangSPT) {
+      menimbangSPT.split('\n').filter(function(s){return s.trim();}).forEach(function(m, i) {
+        html += '<div style="font-size:11pt;padding-left:20px;margin-bottom:2px">' + (i===0?'a.':i===1?'b.':i===2?'c.':'d.') + ' ' + m.trim() + '</div>';
+      });
+    } else {
+      html += '<div style="font-size:11pt;padding-left:20px;color:#999">____________________</div>';
+    }
+    html += '<br>';
+
+    var mengingatSPT = g('sf-mengingat') || '';
+    html += '<div style="font-size:11pt;margin-bottom:4px"><strong>Mengingat:</strong></div>';
+    if (mengingatSPT) {
+      mengingatSPT.split('\n').filter(function(s){return s.trim();}).forEach(function(m, i) {
+        html += '<div style="font-size:11pt;padding-left:20px;margin-bottom:2px">' + (i+1) + '. ' + m.trim() + '</div>';
+      });
+    } else {
+      html += '<div style="font-size:11pt;padding-left:20px;color:#999">____________________</div>';
+    }
+    html += '<br>';
+
+    html += '<div style="text-align:center;font-weight:bold;font-size:11pt;margin-bottom:2px">MEMUTUSKAN</div>';
+    html += '<div style="font-weight:bold;font-size:11pt;margin-bottom:6px">Menetapkan</div>';
+
+    var URUTAN_SPT = ['KESATU','KEDUA','KETIGA','KEEMPAT','KELIMA','KEENAM','KETUJUH','KEDELAPAN'];
+    var diktumItemsSPT = document.querySelectorAll('.diktum-item textarea');
+    html += '<table style="width:100%;font-size:11pt;border-collapse:collapse">';
+    diktumItemsSPT.forEach(function(ta, i) {
+      html += '<tr><td style="width:80px;font-weight:bold;vertical-align:top;padding:2px 0">' + (URUTAN_SPT[i]||'') + '</td>' +
+              '<td style="width:10px;vertical-align:top;padding:2px 0">:</td>' +
+              '<td style="vertical-align:top;padding:2px 0">' + (ta.value || '____________________') + '</td></tr>';
+    });
+    html += '</table><br>';
+
+    html += '<div style="text-align:left;margin-bottom:8px">Ditetapkan di : Mano<br>Tanggal : ' + tglStr + '</div>';
+    html += ttdHtml.replace('style="text-align:center">', 'style="text-align:center">');
+
+    html += '<div style="page-break-before:always;padding-top:20px;font-weight:bold;text-align:center;font-size:12pt;margin-bottom:2px">LAMPIRAN</div>';
+    html += '<div style="text-align:center;font-size:11pt;margin-bottom:14px">Surat Keputusan Nomor: ' + nomor + '</div>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:10pt;border:1px solid #999">';
+    html += '<tr style="background:#5C35A8;color:#fff">' +
+      '<th style="border:1px solid #999;padding:5px">No</th>' +
+      '<th style="border:1px solid #999;padding:5px">Nama Guru</th>' +
+      '<th style="border:1px solid #999;padding:5px">NIP</th>' +
+      '<th style="border:1px solid #999;padding:5px">Mapel/Tugas</th>' +
+      '<th style="border:1px solid #999;padding:5px">Kelas</th>' +
+      '<th style="border:1px solid #999;padding:5px">Jam</th>' +
+      '<th style="border:1px solid #999;padding:5px">Keterangan</th>' +
+      '</tr>';
+    if (!_lampiranSPT.length) {
+      html += '<tr><td colspan="7" style="border:1px solid #999;padding:10px;text-align:center;color:#999">Belum ada data lampiran</td></tr>';
+    } else {
+      _lampiranSPT.forEach(function(row, i) {
+        html += '<tr>' +
+          '<td style="border:1px solid #999;padding:5px;text-align:center">' + (i+1) + '</td>' +
+          '<td style="border:1px solid #999;padding:5px">' + (row.nama||'-') + '</td>' +
+          '<td style="border:1px solid #999;padding:5px">' + (row.nip||'-') + '</td>' +
+          '<td style="border:1px solid #999;padding:5px">' + (row.tugas||'-') + '</td>' +
+          '<td style="border:1px solid #999;padding:5px;text-align:center">' + (row.kelas||'-') + '</td>' +
+          '<td style="border:1px solid #999;padding:5px;text-align:center">' + (row.jam||'-') + '</td>' +
+          '<td style="border:1px solid #999;padding:5px">' + (row.ket||'-') + '</td>' +
+          '</tr>';
+      });
+    }
+    html += '</table>';
+
+  } if (kode === 'SK') {
+  
   // ── SK ──
   if (kode === 'SK') {
     var penerbit = (ttdTipe === 'kepsek' || ttdTipe === 'kepsek_komite')
