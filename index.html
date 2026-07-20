@@ -2515,6 +2515,40 @@ html,body{height:100%;font-family:'Plus Jakarta Sans','Segoe UI',sans-serif;colo
             </div>
             <div id="diktum-container"></div>
           </div>
+            
+          <!-- Lampiran Nama Guru (khusus SPT) -->
+          <div id="field-lampiran-spt" style="display:none;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <label style="margin-bottom:0;font-size:11px;font-weight:700;color:#5C35A8">Lampiran Nama Guru & Tugas *</label>
+              <div style="display:flex;gap:6px">
+                <button type="button" onclick="tambahBarisLampiranSPT()" style="background:#1B5E2A;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:10px;cursor:pointer;font-family:inherit">
+                  <i class="fa-solid fa-plus"></i> Tambah Manual
+                </button>
+                <button type="button" onclick="bukaImporGuruSPT()" style="background:#5C35A8;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:10px;cursor:pointer;font-family:inherit">
+                  <i class="fa-solid fa-file-import"></i> Impor dari Data Guru
+                </button>
+              </div>
+            </div>
+            <div style="overflow-x:auto;border:1.5px solid var(--border);border-radius:10px">
+              <table style="width:100%;border-collapse:collapse;font-size:11px">
+                <thead>
+                  <tr style="background:#5C35A8;color:#fff">
+                    <th style="padding:6px;width:28px">No</th>
+                    <th style="padding:6px;min-width:130px">Nama Guru</th>
+                    <th style="padding:6px;min-width:100px">NIP</th>
+                    <th style="padding:6px;min-width:120px">Mapel/Tugas</th>
+                    <th style="padding:6px;width:60px">Kelas</th>
+                    <th style="padding:6px;width:50px">Jam</th>
+                    <th style="padding:6px;min-width:100px">Keterangan</th>
+                    <th style="padding:6px;width:36px"></th>
+                  </tr>
+                </thead>
+                <tbody id="lampiran-spt-body">
+                  <tr><td colspan="8" style="text-align:center;padding:14px;color:var(--text3)">Belum ada data. Klik "Tambah Manual" atau "Impor dari Data Guru".</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           <!-- Data Pegawai (ST & SKET) -->
           <div id="field-pegawai-group" style="display:none;margin-bottom:12px">
@@ -5009,6 +5043,24 @@ html,body{height:100%;font-family:'Plus Jakarta Sans','Segoe UI',sans-serif;colo
       <div id="daftar-ortu-list">
         <div class="chat-empty">Memuat...</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Impor Guru untuk SPT -->
+<div class="modal-pilih-overlay" id="modal-impor-guru-spt">
+  <div class="modal-pilih-box" style="max-width:480px;max-height:75vh;display:flex;flex-direction:column">
+    <div class="modal-pilih-head" style="background:#5C35A8">
+      <h3><i class="fa-solid fa-users"></i> Pilih Guru untuk Diimpor</h3>
+      <button onclick="tutupImporGuruSPT()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-pilih-body" id="daftar-guru-import-spt" style="flex:1;overflow-y:auto">
+      <div class="chat-empty">Memuat...</div>
+    </div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border)">
+      <button class="btn-simpan-semua" onclick="konfirmasiImporGuruSPT()" style="background:#5C35A8;width:100%;justify-content:center">
+        <i class="fa-solid fa-check"></i> Tambahkan yang Dipilih
+      </button>
     </div>
   </div>
 </div>
@@ -10502,7 +10554,7 @@ var _modePegawai = 'guru';
 
 // Cek apakah kode termasuk Tahap 2
 function isTahap2(kode) {
-  return ['SK','ST','SKET'].indexOf(kode) >= 0;
+  return ['SK','ST','SKET','SPT'].indexOf(kode) >= 0;
 }
 
 // Override gantiJenisSurat untuk handle tahap 2
@@ -10535,15 +10587,19 @@ gantiJenisSurat = function(kode) {
     var isSK   = kode === 'SK';
     var isST   = kode === 'ST';
     var isSKET = kode === 'SKET';
+    var isSPT  = kode === 'SPT';
 
-    document.getElementById('field-judul-sk').style.display    = (isSK || isSKET) ? 'block' : 'none';
+    document.getElementById('field-judul-sk').style.display    = (isSK || isSKET || isSPT) ? 'block' : 'none';
     document.getElementById('field-ttd-tipe').style.display    = 'block';
-    document.getElementById('field-menimbang').style.display   = isSK ? 'block' : 'none';
-    document.getElementById('field-mengingat').style.display   = isSK ? 'block' : 'none';
-    document.getElementById('field-diktum').style.display      = isSK ? 'block' : 'none';
+    document.getElementById('field-menimbang').style.display   = (isSK || isSPT) ? 'block' : 'none';
+    document.getElementById('field-mengingat').style.display   = (isSK || isSPT) ? 'block' : 'none';
+    document.getElementById('field-diktum').style.display      = (isSK || isSPT) ? 'block' : 'none';
+    document.getElementById('field-lampiran-spt').style.display = isSPT ? 'block' : 'none';
     document.getElementById('field-pegawai-group').style.display = (isST || isSKET) ? 'block' : 'none';
     document.getElementById('field-tmt').style.display         = isST ? 'block' : 'none';
     document.getElementById('field-keperluan').style.display   = isSKET ? 'block' : 'none';
+
+    if (isSPT) { _lampiranSPT = []; renderLampiranSPT(); }
 
     // Update label judul
     if (isSKET) {
@@ -10555,12 +10611,13 @@ gantiJenisSurat = function(kode) {
     }
 
     // Update perihal default
-    var perihalDefault = { SK: 'Surat Keputusan', ST: 'Surat Tugas', SKET: 'Surat Keterangan' };
+    var perihalDefault = { SK: 'Surat Keputusan', ST: 'Surat Tugas', SKET: 'Surat Keterangan', SPT: 'Pembagian Tugas Guru' };
     document.getElementById('sf-perihal').value = perihalDefault[kode] || '';
 
     // Init diktum default untuk SK
-    if (isSK && document.getElementById('diktum-container').children.length === 0) {
-      for (var i = 0; i < 4; i++) tambahDiktum();
+    if ((isSK || isSPT) && document.getElementById('diktum-container').children.length === 0) {
+      tambahDiktum();
+    }
     }
 
     // Muat daftar guru
@@ -10647,6 +10704,92 @@ function gantiModePegawai(mode) {
     });
     previewSurat();
   }
+}
+
+// ── LAMPIRAN GURU UNTUK SPT ────────────────────────────────────
+var _lampiranSPT = [];
+
+function tambahBarisLampiranSPT() {
+  _lampiranSPT.push({ nama:'', nip:'', tugas:'', kelas:'', jam:'', ket:'' });
+  renderLampiranSPT();
+}
+
+function hapusBarisLampiranSPT(idx) {
+  _lampiranSPT.splice(idx, 1);
+  renderLampiranSPT();
+}
+
+function updateLampiranSPT(idx, field, val) {
+  _lampiranSPT[idx][field] = val;
+  previewSurat();
+}
+
+function renderLampiranSPT() {
+  var html = '';
+  if (!_lampiranSPT.length) {
+    html = '<tr><td colspan="8" style="text-align:center;padding:14px;color:var(--text3)">Belum ada data. Klik "Tambah Manual" atau "Impor dari Data Guru".</td></tr>';
+  } else {
+    _lampiranSPT.forEach(function(row, i) {
+      var inp = function(field, w) {
+        return '<input value="' + (row[field]||'').replace(/"/g,'&quot;') + '" oninput="updateLampiranSPT(' + i + ',\'' + field + '\',this.value)" style="width:' + (w||'100%') + ';border:1px solid #ddd;border-radius:5px;padding:4px 6px;font-size:11px;font-family:inherit">';
+      };
+      html += '<tr>' +
+        '<td style="padding:4px;text-align:center;color:var(--text3)">' + (i+1) + '</td>' +
+        '<td style="padding:4px">' + inp('nama') + '</td>' +
+        '<td style="padding:4px">' + inp('nip') + '</td>' +
+        '<td style="padding:4px">' + inp('tugas') + '</td>' +
+        '<td style="padding:4px">' + inp('kelas','50px') + '</td>' +
+        '<td style="padding:4px">' + inp('jam','40px') + '</td>' +
+        '<td style="padding:4px">' + inp('ket') + '</td>' +
+        '<td style="padding:4px;text-align:center">' +
+          '<button type="button" onclick="hapusBarisLampiranSPT(' + i + ')" style="background:none;border:none;color:#dc2626;cursor:pointer"><i class="fa-solid fa-trash"></i></button>' +
+        '</td>' +
+        '</tr>';
+    });
+  }
+  document.getElementById('lampiran-spt-body').innerHTML = html;
+  previewSurat();
+}
+
+async function bukaImporGuruSPT() {
+  document.getElementById('modal-impor-guru-spt').classList.add('aktif');
+  document.getElementById('daftar-guru-import-spt').innerHTML = '<div class="chat-empty">Memuat...</div>';
+  try {
+    var res = await api({ action:'getDataGuru' });
+    if (!res.ok || !res.data.length) {
+      document.getElementById('daftar-guru-import-spt').innerHTML = '<div class="chat-empty">Tidak ada data guru.</div>';
+      return;
+    }
+    window._daftarGuruSPTCache = res.data;
+    var html = '';
+    res.data.forEach(function(g) {
+      html += '<label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer">' +
+        '<input type="checkbox" value="' + g.username + '" class="chk-guru-spt" style="width:16px;height:16px">' +
+        '<span style="font-size:13px">' + g.nama + ' <small style="color:#999">(' + (g.mapel||'-') + ')</small></span>' +
+        '</label>';
+    });
+    document.getElementById('daftar-guru-import-spt').innerHTML = html;
+  } catch(e) {
+    document.getElementById('daftar-guru-import-spt').innerHTML = '<div class="chat-empty">Gagal memuat data guru.</div>';
+  }
+}
+
+function tutupImporGuruSPT() {
+  document.getElementById('modal-impor-guru-spt').classList.remove('aktif');
+}
+
+function konfirmasiImporGuruSPT() {
+  var checked = document.querySelectorAll('.chk-guru-spt:checked');
+  if (!checked.length) { toast('Pilih minimal satu guru dulu!', 'err'); return; }
+  checked.forEach(function(cb) {
+    var g = (window._daftarGuruSPTCache || []).find(function(x){ return x.username === cb.value; });
+    if (g) {
+      _lampiranSPT.push({ nama: g.nama, nip: g.nip || '', tugas: g.mapel || '', kelas:'', jam:'', ket:'' });
+    }
+  });
+  renderLampiranSPT();
+  tutupImporGuruSPT();
+  toast(checked.length + ' guru berhasil diimpor! Lengkapi Mapel/Kelas/Jam yang masih kosong.');
 }
 
 function tambahDiktum() {
