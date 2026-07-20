@@ -10553,6 +10553,24 @@ async function buatSuratTahap2(kode) {
     payload.keperluan       = g('sf-keperluan');
   }
 
+  } else if (kode === 'SPT') {
+    var judulSPT     = g('sf-judul-sk');
+    var menimbangSPT = g('sf-menimbang');
+    var mengingatSPT = g('sf-mengingat');
+    var diktumSPT    = getDiktumList();
+    if (!judulSPT || !menimbangSPT || !mengingatSPT || !diktumSPT.length) {
+      toast('Lengkapi Judul, Menimbang, Mengingat, dan Memutuskan!', 'err'); return;
+    }
+    if (!_lampiranSPT.length) {
+      toast('Tambahkan minimal satu data guru di Lampiran!', 'err'); return;
+    }
+    payload.judul     = judulSPT.toUpperCase();
+    payload.menimbang = menimbangSPT;
+    payload.mengingat = mengingatSPT;
+    payload.diktum    = JSON.stringify(diktumSPT);
+    payload.lampiran  = JSON.stringify(_lampiranSPT);
+  }
+
   var btn = document.querySelector('#surat-form-container .btn-simpan-semua');
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Membuat surat...';
